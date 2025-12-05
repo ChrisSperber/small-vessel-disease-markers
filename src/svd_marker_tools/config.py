@@ -5,7 +5,7 @@ from pathlib import Path
 DATA_FOLDER = Path(__file__).parents[3] / "Data"
 PROSPECTIVE_SAMPLE_XLS = DATA_FOLDER / "source_prospective_svd_data.xlsx"
 PROSPECTIVE_SAMPLE_CLEAN_CSV = DATA_FOLDER / "clean_prospective_svd_data.csv"
-RETROSPECTIVE_SAMPLE_XLS = DATA_FOLDER / "Data_SVD_full_Cluster.xlsx"
+RETROSPECTIVE_SAMPLE_XLS = DATA_FOLDER / "Data_full_09_2023.xlsx"
 RETROSPECTIVE_SAMPLE_CLEAN_CSV = DATA_FOLDER / "clean_retrospective_svd_data.csv"
 
 MISSING_PLACEHOLDER = "Not_Available"
