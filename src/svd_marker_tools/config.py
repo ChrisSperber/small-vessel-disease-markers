@@ -9,3 +9,5 @@ RETROSPECTIVE_SAMPLE_XLS = DATA_FOLDER / "Data_full_09_2023.xlsx"
 RETROSPECTIVE_SAMPLE_CLEAN_CSV = DATA_FOLDER / "clean_retrospective_svd_data.csv"
 
 MISSING_PLACEHOLDER = "Not_Available"
+
+RNG_SEED = 9001
