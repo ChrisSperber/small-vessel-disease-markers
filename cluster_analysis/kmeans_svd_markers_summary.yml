@@ -1,0 +1,137 @@
+analysis: kmeans_svd_markers
+n_subjects: 423
+n_features: 8
+included_variables:
+- Lacunes_Nr
+- CMB_lobar_Nr
+- CMB_central_Nr
+- CMB_infratent_Nr
+- EPVS_centrum_semiovale
+- EPVS_basal_ganglia
+- WMH_periventricular
+- WHM_deep
+preprocessing:
+  deskew:
+    method: log1p
+    variables:
+    - Lacunes_Nr
+    - CMB_lobar_Nr
+    - CMB_central_Nr
+    - CMB_infratent_Nr
+  standardisation:
+    method: zscore
+    ddof: 0
+  winsorise:
+    method: clip
+    lower: -5
+    upper: 5
+kmeans_params:
+  n_clusters: 5
+  init: k-means++
+  n_init: 50
+  max_iter: 300
+  algorithm: lloyd
+fit_results:
+  inertia: 1559.8830935044866
+  cluster_sizes:
+    Cluster1: 38
+    Cluster2: 138
+    Cluster3: 43
+    Cluster4: 197
+    Cluster5: 7
+  centroids:
+  - cluster: 1
+    centroid_z:
+      Lacunes_Nr: -0.1848173791161422
+      CMB_lobar_Nr: 0.1867616519959663
+      CMB_central_Nr: -0.05178639097581593
+      CMB_infratent_Nr: -0.08546820330947004
+      EPVS_centrum_semiovale: 0.9544422407841038
+      EPVS_basal_ganglia: 2.3857117047548915
+      WMH_periventricular: 0.6914722203224093
+      WHM_deep: 0.5863709889456713
+    centroid_original_scale:
+      Lacunes_Nr: 0.05624709124406286
+      CMB_lobar_Nr: 0.2515044049339439
+      CMB_central_Nr: 0.03715504444619199
+      CMB_infratent_Nr: 0.018408093274101974
+      EPVS_centrum_semiovale: 1.9210526315789473
+      EPVS_basal_ganglia: 2.1578947368421053
+      WMH_periventricular: 1.263157894736842
+      WHM_deep: 1.4473684210526314
+  - cluster: 2
+    centroid_z:
+      Lacunes_Nr: -0.3232314528055684
+      CMB_lobar_Nr: -0.03744157807157702
+      CMB_central_Nr: -0.06548627448041756
+      CMB_infratent_Nr: -0.14574729919413468
+      EPVS_centrum_semiovale: -0.03109000571258559
+      EPVS_basal_ganglia: -0.28337138306057136
+      WMH_periventricular: 0.766503241869384
+      WHM_deep: 0.6490614801181774
+    centroid_original_scale:
+      Lacunes_Nr: 0.0050354410908144956
+      CMB_lobar_Nr: 0.1414506432817857
+      CMB_central_Nr: 0.03362804489267073
+      CMB_infratent_Nr: 0.0050354410908146005
+      EPVS_centrum_semiovale: 1.2971014492753623
+      EPVS_basal_ganglia: 1.0
+      WMH_periventricular: 1.3260869565217384
+      WHM_deep: 1.5
+  - cluster: 3
+    centroid_z:
+      Lacunes_Nr: 2.5777327291024132
+      CMB_lobar_Nr: 0.0788805113215983
+      CMB_central_Nr: 0.07182836631131456
+      CMB_infratent_Nr: -0.09514089543979992
+      EPVS_centrum_semiovale: 0.2710223911672276
+      EPVS_basal_ganglia: 0.19909501019148387
+      WMH_periventricular: 0.2390652997051271
+      WHM_deep: 0.302805860270035
+    centroid_original_scale:
+      Lacunes_Nr: 1.8480969357714176
+      CMB_lobar_Nr: 0.19728424271592238
+      CMB_central_Nr: 0.06952855423198243
+      CMB_infratent_Nr: 0.016250325193551903
+      EPVS_centrum_semiovale: 1.4883720930232558
+      EPVS_basal_ganglia: 1.2093023255813953
+      WMH_periventricular: 0.883720930232558
+      WHM_deep: 1.2093023255813953
+  - cluster: 4
+    centroid_z:
+      Lacunes_Nr: -0.31762178857055845
+      CMB_lobar_Nr: -0.12247052579579605
+      CMB_central_Nr: -0.14190337899649844
+      CMB_infratent_Nr: -0.10446988784976277
+      EPVS_centrum_semiovale: -0.24379350916306916
+      EPVS_basal_ganglia: -0.3769802038607446
+      WMH_periventricular: -0.8025003305354138
+      WHM_deep: -0.7143771464229446
+    centroid_original_scale:
+      Lacunes_Nr: 0.007061845270770016
+      CMB_lobar_Nr: 0.10229172739979805
+      CMB_central_Nr: 0.014173560200168541
+      CMB_infratent_Nr: 0.014173560200168528
+      EPVS_centrum_semiovale: 1.1624365482233503
+      EPVS_basal_ganglia: 0.9593908629441623
+      WMH_periventricular: 0.010152284263959643
+      WHM_deep: 0.35532994923857864
+  - cluster: 5
+    centroid_z:
+      Lacunes_Nr: 0.3031127892093672
+      CMB_lobar_Nr: 2.235407937637467
+      CMB_central_Nr: 3.5147126329441596
+      CMB_infratent_Nr: 4.954705666311789
+      EPVS_centrum_semiovale: 0.6278534462106721
+      EPVS_basal_ganglia: 2.0217458291436925
+      WMH_periventricular: 2.251337925418494
+      WHM_deep: 2.2655805739235046
+    centroid_original_scale:
+      Lacunes_Nr: 0.2584989506418267
+      CMB_lobar_Nr: 1.9020458784624084
+      CMB_central_Nr: 1.517541890882058
+      CMB_infratent_Nr: 2.0754230601891352
+      EPVS_centrum_semiovale: 1.714285714285714
+      EPVS_basal_ganglia: 2.0
+      WMH_periventricular: 2.5714285714285716
+      WHM_deep: 2.8571428571428568
