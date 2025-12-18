@@ -59,7 +59,7 @@ stds = svd_data_df.std(ddof=0)
 
 # z-standardise all variables
 svd_data_df[:] = (svd_data_df - svd_data_df.mean()) / svd_data_df.std(ddof=0)
-# clip extreme values > 4SDs from the mean
+# clip extreme values > xSDs from the mean
 svd_data_df[:] = svd_data_df.clip(lower=-WINSORISE_SD, upper=WINSORISE_SD)
 
 # %%
@@ -110,11 +110,7 @@ for i in range(K_CLUSTER_NUMBER):
     centroids_named.append(
         {
             "cluster": int(i + 1),
-            "centroid_z": {
-                var: float(centroids_z[i, j])
-                for j, var in enumerate(VARIABLES_CLUSTERING)
-            },
-            "centroid_original_scale": {
+            "centroid_original_scale (approximated, not considering clipping)": {
                 var: float(centroids_original[i, j])
                 for j, var in enumerate(VARIABLES_CLUSTERING)
             },
