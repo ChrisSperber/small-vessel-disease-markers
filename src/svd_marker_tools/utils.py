@@ -50,6 +50,7 @@ class Cols:
     FOLLOWUP_RESTROKE: str = "mRS_prestroke"
     NIHSS_ADMISSION: str = "NIH_admission"
     NIHSS_24H: str = "NIHSS_24h"
+    NIHSS_24H_BINARY_GT4: str = "NIHSS_24h_binary_gt4"
     INTRAVENOUS_THROMBOLYSIS: str = "intervention_ivt"
     MECHANICAL_THROMBECTOMY: str = "intervention_mt"
     STROKE_TOAST: str = "EtiologyTOAST"

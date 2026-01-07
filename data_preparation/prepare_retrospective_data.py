@@ -16,6 +16,7 @@ import pandas as pd
 
 from svd_marker_tools.config import (
     MISSING_PLACEHOLDER,
+    NIHSS_CUTOFF_MINOR_STROKE,
     RETROSPECTIVE_SAMPLE_CLEAN_CSV,
     RETROSPECTIVE_SAMPLE_XLS,
 )
@@ -143,6 +144,11 @@ data_df[Cols.SVD_BURDEN_SCORE] = data_df[
         Cols.WMH_BINARY,
     ]
 ].sum(axis=1)
+
+# Binary NIHSS > 4
+data_df[Cols.NIHSS_24H_BINARY_GT4] = (
+    data_df[Cols.NIHSS_24H] > NIHSS_CUTOFF_MINOR_STROKE
+).astype(int)
 
 # %%
 # store csv

@@ -11,3 +11,5 @@ RETROSPECTIVE_SAMPLE_CLEAN_CSV = DATA_FOLDER / "clean_retrospective_svd_data.csv
 MISSING_PLACEHOLDER = "Not_Available"
 
 RNG_SEED = 9001
+
+NIHSS_CUTOFF_MINOR_STROKE = 4  # ensure using >NIHSS_CUTOFF_MINOR_STROKE, not >=
