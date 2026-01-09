@@ -45,7 +45,7 @@ class TrainingConfig:
     """
 
     device: str = "cuda"
-    epochs: int = 250
+    epochs: int = 500
     lr: float = 0.001
     batch_size: int = 128
     patience_early_stopping: int = 15
@@ -54,7 +54,7 @@ class TrainingConfig:
     weight_decay: float = 1e-4
     warmup_epochs: int = 5
     ramp_epochs: int = 10
-    lambda_max: float = 1
+    lambda_max: float = 3.0
 
 
 autoencoder_config = TrainingConfig()

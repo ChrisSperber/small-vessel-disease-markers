@@ -28,6 +28,7 @@ from svd_marker_tools.config import RETROSPECTIVE_SAMPLE_CLEAN_CSV
 from svd_marker_tools.utils import RNG_SEED, Cols
 
 NIHSS_COL = Cols.NIHSS_24H_BINARY_GT4
+MIN_DELTA = 1e-4  # minimum difference in loss to identify as an improvement
 
 # %%
 # load data
@@ -77,6 +78,10 @@ with open(config_path, "w") as f:
 warmup_epochs = autoencoder_config.warmup_epochs
 ramp_epochs = autoencoder_config.ramp_epochs
 lambda_max = autoencoder_config.lambda_max
+
+# due to a dynamically changing loss function, early stopping is only activated as soon as the final
+# loss function is reached
+early_stop_start_epoch = warmup_epochs + ramp_epochs
 
 
 # %%
@@ -256,31 +261,37 @@ def train():  # noqa: D103, PLR0915
 
         scheduler.step(val_loss)
 
-        # Early stopping and checkpointing
-        if val_loss < best_val_loss:
-            print("Validation loss improved. Saving model...")
-            best_val_loss = val_loss
-            patience_counter = 0
-            torch.save(
-                {
-                    "epoch": epoch,
-                    "model_state_dict": model.state_dict(),
-                    "optimizer_state_dict": optimizer.state_dict(),
-                    "val_loss": val_loss,
-                    "preproc_path": str(preproc_path),
-                    "run_config": asdict(run_config),
-                },
-                checkpoint_path,
-            )
-        else:
-            patience_counter += 1
+        # Early stopping and checkpointing (start only after ramp is finished)
+        if epoch < early_stop_start_epoch:
             print(
-                "No improvement. Patience "
-                f"{patience_counter}/{autoencoder_config.patience_early_stopping}"
+                f"Early stopping disabled until epoch {early_stop_start_epoch} "
+                f"(current {epoch+1})."
             )
-            if patience_counter >= autoencoder_config.patience_early_stopping:
-                print("Early stopping triggered!")
-                break
+        else:  # noqa: PLR5501
+            if val_loss < best_val_loss - MIN_DELTA:
+                print("Validation loss improved. Saving model...")
+                best_val_loss = val_loss
+                patience_counter = 0
+                torch.save(
+                    {
+                        "epoch": epoch,
+                        "model_state_dict": model.state_dict(),
+                        "optimizer_state_dict": optimizer.state_dict(),
+                        "val_loss": val_loss,
+                        "preproc_path": str(preproc_path),
+                        "run_config": asdict(run_config),
+                    },
+                    checkpoint_path,
+                )
+            else:
+                patience_counter += 1
+                print(
+                    "No improvement. Patience "
+                    f"{patience_counter}/{autoencoder_config.patience_early_stopping}"
+                )
+                if patience_counter >= autoencoder_config.patience_early_stopping:
+                    print("Early stopping triggered!")
+                    break
 
     print(f"Training finished. Best validation loss: {best_val_loss:.6f}")
 
