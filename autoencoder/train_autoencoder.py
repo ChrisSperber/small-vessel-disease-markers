@@ -50,6 +50,7 @@ val_train_loss = []
 val_eval_loss = []
 val_recon_loss = []
 val_aux_loss = []
+val_aux_acc = []
 
 
 # %%
@@ -235,6 +236,7 @@ def train():  # noqa: D103, PLR0915
         val_recon /= n_val
         val_aux /= n_val
         val_acc = correct / max(1, total)
+        val_aux_acc.append(val_acc)
 
         # Logging
         current_lr = optimizer.param_groups[0]["lr"]
@@ -288,6 +290,7 @@ def train():  # noqa: D103, PLR0915
         "val_loss": val_eval_loss,
         "val_recon": val_recon_loss,
         "val_aux": val_aux_loss,
+        "val_aux_acc": val_aux_acc,
     }
     with open(metrics_path, "w") as f:
         json.dump(metrics, f, indent=2)
