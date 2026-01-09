@@ -1,0 +1,23 @@
+{
+  "training": {
+    "device": "cpu",
+    "epochs": 500,
+    "lr": 0.001,
+    "batch_size": 128,
+    "patience_early_stopping": 15,
+    "patience_reduce_lr": 5,
+    "debug_mode": false,
+    "weight_decay": 0.0001,
+    "warmup_epochs": 5,
+    "ramp_epochs": 10,
+    "lambda_max": 1.0
+  },
+  "run": {
+    "rng_seed": 9001,
+    "weight_decay": 0.0001,
+    "warmup_epochs": 5,
+    "ramp_epochs": 10,
+    "nihss_col": "NIHSS_24h_binary_gt4",
+    "timestamp": "20260109_2329"
+  }
+}

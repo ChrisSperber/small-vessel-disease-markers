@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "state": {
+    "cfg": {
+      "feature_cols": [
+        "Lacunes_Nr",
+        "EPVS_basal_ganglia",
+        "EPVS_centrum_semiovale",
+        "CMB_total_Nr",
+        "WHM_deep",
+        "WMH_periventricular"
+      ],
+      "nihss_col": "NIHSS_24h_binary_gt4",
+      "count_cols": [
+        "Lacunes_Nr",
+        "CMB_total_Nr"
+      ],
+      "ordinal_cols": [
+        "EPVS_basal_ganglia",
+        "EPVS_centrum_semiovale",
+        "WHM_deep",
+        "WMH_periventricular"
+      ],
+      "standardize_features": true,
+      "standardize_nihss": false
+    },
+    "feat_mean": [
+      0.3660432994365692,
+      1.2142099142074585,
+      1.3499469757080078,
+      0.3130672872066498,
+      1.0922586917877197,
+      1.206786870956421
+    ],
+    "feat_std": [
+      0.6075397729873657,
+      0.6063726544380188,
+      1.0694433450698853,
+      0.6200358867645264,
+      0.8683021068572998,
+      0.9805513620376587
+    ],
+    "nihss_mean": null,
+    "nihss_std": null
+  }
+}
