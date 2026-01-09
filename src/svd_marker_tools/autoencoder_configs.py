@@ -41,10 +41,14 @@ class TrainingConfig:
         batch_size (int): Batch size.
         patience_early_stopping (int): Number of epochs without improvement before early stopping.
         patience_reduce_lr (int): Number of stagnant epochs before reducing learning rate.
+        weight_decay: L2-like weight decay to prevent overfitting
+        warmup_epochs: Epochs to train the autoencoder without considering the auxilliary target.
+        ramp_epochs: Epochs during which the auxilliary loss is ramped up to lambda_max.
+        lambda_max: Maximum weighting of the auxilliary loss after ramping.
 
     """
 
-    device: str = "cuda"
+    device: str = "cpu"
     epochs: int = 500
     lr: float = 0.001
     batch_size: int = 128
@@ -54,7 +58,7 @@ class TrainingConfig:
     weight_decay: float = 1e-4
     warmup_epochs: int = 5
     ramp_epochs: int = 10
-    lambda_max: float = 3.0
+    lambda_max: float = 1.0
 
 
 autoencoder_config = TrainingConfig()

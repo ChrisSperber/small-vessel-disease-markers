@@ -169,6 +169,7 @@ def train():  # noqa: D103, PLR0915
 
     # Early stopping
     best_val_loss = float("inf")
+    best_val_aux_acc = float("inf")
     patience_counter = 0
 
     for epoch in range(epochs):
@@ -270,6 +271,7 @@ def train():  # noqa: D103, PLR0915
             if val_loss < best_val_loss - MIN_DELTA:
                 print("Validation loss improved. Saving model...")
                 best_val_loss = val_loss
+                best_val_aux_acc = val_acc
                 patience_counter = 0
                 best_weights_path = (
                     run_output_dir / f"{timestamp}_best_model_weights.pt"
@@ -286,6 +288,7 @@ def train():  # noqa: D103, PLR0915
                     break
 
     print(f"Training finished. Best validation loss: {best_val_loss:.6f}")
+    print(f"Best auxilliary validation accuracy: {best_val_aux_acc:.3f}")
 
     metrics_path = run_output_dir / "metrics.json"
     metrics = {
