@@ -167,10 +167,9 @@ def train():  # noqa: D103, PLR0915
         patience=autoencoder_config.patience_reduce_lr,
     )
 
-    # Early stopping and checkpoint setup
+    # Early stopping
     best_val_loss = float("inf")
     patience_counter = 0
-    checkpoint_path = run_output_dir / f"{timestamp}_best_model_full.pt"
 
     for epoch in range(epochs):
         lam = lambda_aux(epoch)
@@ -261,7 +260,7 @@ def train():  # noqa: D103, PLR0915
 
         scheduler.step(val_loss)
 
-        # Early stopping and checkpointing (start only after ramp is finished)
+        # Early stopping (start only after ramp is finished)
         if epoch < early_stop_start_epoch:
             print(
                 f"Early stopping disabled until epoch {early_stop_start_epoch} "
@@ -272,17 +271,10 @@ def train():  # noqa: D103, PLR0915
                 print("Validation loss improved. Saving model...")
                 best_val_loss = val_loss
                 patience_counter = 0
-                torch.save(
-                    {
-                        "epoch": epoch,
-                        "model_state_dict": model.state_dict(),
-                        "optimizer_state_dict": optimizer.state_dict(),
-                        "val_loss": val_loss,
-                        "preproc_path": str(preproc_path),
-                        "run_config": asdict(run_config),
-                    },
-                    checkpoint_path,
+                best_weights_path = (
+                    run_output_dir / f"{timestamp}_best_model_weights.pt"
                 )
+                torch.save(model.state_dict(), best_weights_path)
             else:
                 patience_counter += 1
                 print(
