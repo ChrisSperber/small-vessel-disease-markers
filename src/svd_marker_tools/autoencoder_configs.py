@@ -13,6 +13,18 @@ SHARED_COLS_FOR_AUTOENCODER = [
     Cols.WMH_DEEP,
     Cols.WMH_PV,
 ]
+# list all cols with counts to be log(x+1) deskewed
+FEATURE_COLS_COUNTS = [
+    Cols.LACUNES,
+    Cols.CMB_TOTAL,
+]
+# list all ordinal rating cols to be standardized
+FEATURE_COLS_ORDINAL = [
+    Cols.EPVS_BG,
+    Cols.EPVS_CS,
+    Cols.WMH_DEEP,
+    Cols.WMH_PV,
+]
 
 
 AUTOENCODER_OUTPUTS_DIR: Path = Path(__file__).parents[2] / "autoencoder" / "outputs"
@@ -33,11 +45,16 @@ class TrainingConfig:
     """
 
     device: str = "cuda"
-    epochs: int = 500
+    epochs: int = 250
     lr: float = 0.001
     batch_size: int = 128
     patience_early_stopping: int = 15
     patience_reduce_lr: int = 5
+    debug_mode: bool = False
+    weight_decay: float = 1e-4
+    warmup_epochs: int = 5
+    ramp_epochs: int = 10
+    lambda_max: float = 1
 
 
 autoencoder_config = TrainingConfig()

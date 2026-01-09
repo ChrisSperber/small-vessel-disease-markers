@@ -3,6 +3,8 @@
 from dataclasses import dataclass, fields
 from enum import Enum
 
+RNG_SEED = 9001
+
 
 @dataclass(frozen=True)
 class ProspSourceCols:
