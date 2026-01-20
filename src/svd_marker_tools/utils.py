@@ -5,6 +5,8 @@ from enum import Enum
 
 RNG_SEED = 9001
 
+LATENT_SVD_SCORE = "SVD_latent_score"
+
 
 @dataclass(frozen=True)
 class ProspSourceCols:
