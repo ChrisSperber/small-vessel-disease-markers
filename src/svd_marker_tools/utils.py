@@ -51,6 +51,7 @@ class Cols:
     MRI_DATE: str = "MRI_date"
     PRESTROKE_MRS: str = "PrestrokeMRS"
     FOLLOWUP_MRS: str = "mRS_3mon"
+    FOLLOWUP_MOCA: str = "MOCA_3mon"
     FOLLOWUP_RESTROKE: str = "mRS_prestroke"
     NIHSS_ADMISSION: str = "NIH_admission"
     NIHSS_24H: str = "NIHSS_24h"
@@ -65,6 +66,7 @@ class Cols:
     MED_HIST_SMOKING: str = "MedHistSmoking"
     MED_HIST_ATRIALFIBR: str = "MedHistAtrialFibr"
     MED_HIST_CHD: str = "MedHistCHD"  # Coronoary Heart Disease
+    MED_HIST_RENAL: str = "MedHistRenalDisease"
     LACUNES: str = "Lacunes_Nr"
     CMB_LOBAR: str = "CMB_lobar_Nr"
     CMB_CENTRAL: str = "CMB_central_Nr"
