@@ -22,12 +22,13 @@ from scipy.stats import kendalltau
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
 
-from svd_marker_tools.config import RETROSPECTIVE_SAMPLE_CLEAN_CSV
-from svd_marker_tools.utils import Cols
+from svd_marker_tools.config import (
+    PROSPECTIVE_SAMPLE_CLEAN_CSV,
+    RETROSPECTIVE_SAMPLE_CLEAN_CSV,
+)
+from svd_marker_tools.utils import LATENT_SVD_SCORE, Cols
 
-LATENT_SVD_SCORE = "SVD_latent_score"
-
-MODEL_WEIGHTS_RETRO = (
+MODEL_WEIGHTS = (
     Path(__file__).parent
     / "outputs"
     / "svd_ae_output_20260109_2329"
@@ -47,18 +48,31 @@ retrospective_data_df = pd.read_csv(RETROSPECTIVE_SAMPLE_CLEAN_CSV, sep=";")
 
 retrospective_latents_arr = compute_svd_latent(
     df=retrospective_data_df,
-    model_weights_path=MODEL_WEIGHTS_RETRO,
+    model_weights_path=MODEL_WEIGHTS,
     preproc_json_path=PREPROC_JSON,
 )
 
 retrospective_data_df[LATENT_SVD_SCORE] = retrospective_latents_arr
 
 # %%
+# load prospective data and compute latent
+prosepctive_data_df = pd.read_csv(PROSPECTIVE_SAMPLE_CLEAN_CSV, sep=";")
+
+prospective_latents_arr = compute_svd_latent(
+    df=prosepctive_data_df,
+    model_weights_path=MODEL_WEIGHTS,
+    preproc_json_path=PREPROC_JSON,
+)
+
+prosepctive_data_df[LATENT_SVD_SCORE] = prospective_latents_arr
+
+
+# %%
 # load simple latents
 simple_latents_csv = pd.read_csv(SIMPLE_LATENTS_CSV, sep=",")
 
 # %%
-# evaluate latent in retrospective data
+# evaluate autoencoder latent in retrospective data
 svd_scores = [
     LATENT_SVD_SCORE,
     Cols.SVD_BURDEN_SCORE,
@@ -73,7 +87,7 @@ lines.append("SVD autoencoder evaluation\n")
 lines.append("Within-training-sample/retrospective data\n")
 lines.append(f"N = {len(retrospective_data_df)}\n")
 
-# --- 1) Logistic regression + AUC (each score separately) ---
+# --- 1) Logistic regression + AUC ---
 lines.append("\nLogistic regression: NIHSS binary ~ SVD score (univariate)\n")
 for score_col in svd_scores:
     x = retrospective_data_df[[score_col]].to_numpy(dtype=float)
@@ -92,7 +106,7 @@ for score_col in svd_scores:
     lines.append(f"  intercept:   {intercept:.6f}\n")
     lines.append(f"  AUC:         {auc:.4f}\n")
 
-# --- 2) Kendall's tau vs continuous NIHSS ---
+# --- 2) Kendall's tau SVD scores vs continuous NIHSS ---
 lines.append("\nKendall's tau: NIHSS continuous vs SVD score\n")
 for score_col in svd_scores:
     x = retrospective_data_df[score_col].to_numpy(dtype=float)
@@ -104,5 +118,10 @@ for score_col in svd_scores:
 
 OUT_TXT.write_text("".join(lines), encoding="utf-8")
 print(f"Wrote: {OUT_TXT}")
+
+# %%
+# evaluate latents in prospective data
+
+# TODO
 
 # %%
