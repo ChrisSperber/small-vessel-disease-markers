@@ -125,10 +125,15 @@ data_df[int_cols] = (
 # rename columns
 data_df = data_df.rename(columns=COLNAME_MAP)
 
+# set missing placeholder for non int columns
+data_df[Cols.NIHSS_24H] = data_df[Cols.NIHSS_24H].replace(MISSING_MARKERS, pd.NA)
+data_df["yoe"] = data_df["yoe"].replace(MISSING_MARKERS, pd.NA)
+data_df.loc[data_df["yoe"].isna(), "yoe"] = MISSING_PLACEHOLDER
+
 # %%
 # check/derive main target variables
 # NIHSS 24h was target training criterion and is central to validation
-data_df[Cols.NIHSS_24H] = data_df[Cols.NIHSS_24H].replace(MISSING_MARKERS, pd.NA)
+
 data_df = data_df[data_df[Cols.NIHSS_24H].notna()]
 data_df[Cols.NIHSS_24H_BINARY_GT4] = (
     data_df[Cols.NIHSS_24H] > NIHSS_CUTOFF_MINOR_STROKE
