@@ -52,7 +52,7 @@ class Cols:
     PRESTROKE_MRS: str = "PrestrokeMRS"
     FOLLOWUP_MRS: str = "mRS_3mon"
     FOLLOWUP_MOCA: str = "MOCA_3mon"
-    FOLLOWUP_RESTROKE: str = "mRS_prestroke"
+    FOLLOWUP_RESTROKE: str = "Restroke_Followup"
     NIHSS_ADMISSION: str = "NIH_admission"
     NIHSS_24H: str = "NIHSS_24h"
     NIHSS_24H_BINARY_GT4: str = "NIHSS_24h_binary_gt4"
