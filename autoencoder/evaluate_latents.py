@@ -7,6 +7,7 @@ Requirements:
     - an autoencoder has been succesfully trained and its model and preproc.json are referenced to
         in the constants
     - simple latent transform were computed and stored in a csv
+    - additional prospective data csv was created via load_additional_prospective_data.py
 
 Outputs:
     - txt file with statistical results
