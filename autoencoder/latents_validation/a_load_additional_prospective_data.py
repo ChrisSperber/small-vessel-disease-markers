@@ -1,6 +1,6 @@
 """Load additional data for the prospective dataset.
 
-Further non-SVD data are loaded from an extended data file, notably to NIHSS.
+Further non-SVD data are loaded from an extended data file, notably the NIHSS.
 
 Outputs:
     - csv with relevant data for validation analysis
@@ -75,7 +75,9 @@ data_followup = pd.read_excel(
 data_followup = data_followup[RELEVANT_COLS_FOLLOWUP]
 
 # %%
-data = data_main.merge(data_followup, how="left", on="record_id", validate="one_to_one")
+data_df = data_main.merge(
+    data_followup, how="left", on="record_id", validate="one_to_one"
+)
 
 # %%
 # clean table - unify missing placeholder, format numbers
@@ -98,40 +100,44 @@ int_cols = [
     "moca_tot_fu3",
 ]
 
-MISSING_MARKERS = [-999, "-999"]
+MISSING_MARKERS = [-999, "-999", -999.0]
 
 # normalize missing markers + empty/whitespace strings
-data[int_cols] = (
-    data[int_cols].replace(MISSING_MARKERS, pd.NA).replace(r"^\s*$", pd.NA, regex=True)
+data_df[int_cols] = (
+    data_df[int_cols]
+    .replace(MISSING_MARKERS, pd.NA)
+    .replace(r"^\s*$", pd.NA, regex=True)
 )
 # ensure columns are numeric
-num = data[int_cols].apply(pd.to_numeric, errors="coerce")
+num = data_df[int_cols].apply(pd.to_numeric, errors="coerce")
 
 # debug check: fail loudly if any non-missing values are not integer-valued
 nonint = num.notna() & (num % 1 != 0)
 if nonint.any().any():
     for c in nonint.columns[nonint.any(axis=0)]:
-        bad = data.loc[nonint[c], c].unique()[:20]
+        bad = data_df.loc[nonint[c], c].unique()[:20]
         raise ValueError(f"Non-integer values in {c}: {bad}")
 
-data[int_cols] = (
-    data[int_cols].astype("Int64").astype("string").fillna(MISSING_PLACEHOLDER)
+data_df[int_cols] = (
+    data_df[int_cols].astype("Int64").astype("string").fillna(MISSING_PLACEHOLDER)
 )
 
 # rename columns
-data = data.rename(columns=COLNAME_MAP)
+data_df = data_df.rename(columns=COLNAME_MAP)
 
 # %%
-# checl/derive main target variables
+# check/derive main target variables
 # NIHSS 24h was target training criterion and is central to validation
-data = data[data[Cols.NIHSS_24H] != MISSING_PLACEHOLDER]
-data[Cols.NIHSS_24H_BINARY_GT4] = (
-    data[Cols.NIHSS_24H] > NIHSS_CUTOFF_MINOR_STROKE
+data_df[Cols.NIHSS_24H] = data_df[Cols.NIHSS_24H].replace(MISSING_MARKERS, pd.NA)
+data_df = data_df[data_df[Cols.NIHSS_24H].notna()]
+data_df[Cols.NIHSS_24H_BINARY_GT4] = (
+    data_df[Cols.NIHSS_24H] > NIHSS_CUTOFF_MINOR_STROKE
 ).astype(int)
+
 
 # %%
 # store data
 outfile = DATA_FOLDER / "additional_prospective_data.csv"
-data.to_csv(outfile, sep=";", index=False)
+data_df.to_csv(outfile, sep=";", index=False)
 
 # %%
