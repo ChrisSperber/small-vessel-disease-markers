@@ -51,6 +51,7 @@ class Cols:
     MRI_DATE: str = "MRI_date"
     PRESTROKE_MRS: str = "PrestrokeMRS"
     FOLLOWUP_MRS: str = "mRS_3mon"
+    FOLLOWUP_MRS_BINARY_GT1: str = "mRS_3mon_binary_gt1"
     FOLLOWUP_MOCA: str = "MOCA_3mon"
     FOLLOWUP_RESTROKE: str = "Restroke_Followup"
     NIHSS_ADMISSION: str = "NIH_admission"

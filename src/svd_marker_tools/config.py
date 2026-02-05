@@ -16,3 +16,4 @@ MISSING_PLACEHOLDER = "Not_Available"
 RNG_SEED = 9001
 
 NIHSS_CUTOFF_MINOR_STROKE = 4  # ensure using >NIHSS_CUTOFF_MINOR_STROKE, not >=
+MRS_CUTOFF_POOR = 1  # ensure using >MRS_CUTOFF_POOR, not >=

@@ -14,6 +14,7 @@ from svd_marker_tools.config import (
     ADDITIONAL_PROSPECTIVE_SAMPLE_XLS,
     DATA_FOLDER,
     MISSING_PLACEHOLDER,
+    MRS_CUTOFF_POOR,
     NIHSS_CUTOFF_MINOR_STROKE,
 )
 from svd_marker_tools.utils import Cols
@@ -139,6 +140,17 @@ data_df[Cols.NIHSS_24H_BINARY_GT4] = (
     data_df[Cols.NIHSS_24H] > NIHSS_CUTOFF_MINOR_STROKE
 ).astype(int)
 
+# mRS is a secondary target variable
+# cutoff >1 is chosen to create less uneven groups
+
+num = pd.to_numeric(data_df[Cols.FOLLOWUP_MRS], errors="coerce")
+
+data_df[Cols.FOLLOWUP_MRS_BINARY_GT1] = (
+    num.gt(MRS_CUTOFF_POOR)
+    .astype("Int64")
+    .astype(str)
+    .replace("<NA>", MISSING_PLACEHOLDER)
+)
 
 # %%
 # store data
