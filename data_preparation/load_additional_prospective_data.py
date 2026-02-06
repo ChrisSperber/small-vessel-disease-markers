@@ -8,6 +8,7 @@ Outputs:
 """
 
 # %%
+import numpy as np
 import pandas as pd
 
 from svd_marker_tools.config import (
@@ -50,6 +51,7 @@ COLNAME_MAP = {
     "pat_id": Cols.ID,
     "age": Cols.AGE,
     "biol_sex": Cols.SEX,
+    "yoe": Cols.YEAR_OF_EDUCATION,
     "med_tia": Cols.MED_HIST_TIA,
     "med_hypert": Cols.MED_HIST_HYPERTENSION,
     "med_diab": Cols.MED_HIST_DIABETES,
@@ -128,8 +130,12 @@ data_df = data_df.rename(columns=COLNAME_MAP)
 
 # set missing placeholder for non int columns
 data_df[Cols.NIHSS_24H] = data_df[Cols.NIHSS_24H].replace(MISSING_MARKERS, pd.NA)
-data_df["yoe"] = data_df["yoe"].replace(MISSING_MARKERS, pd.NA)
-data_df.loc[data_df["yoe"].isna(), "yoe"] = MISSING_PLACEHOLDER
+data_df[Cols.YEAR_OF_EDUCATION] = data_df[Cols.YEAR_OF_EDUCATION].replace(
+    MISSING_MARKERS, pd.NA
+)
+data_df.loc[data_df[Cols.YEAR_OF_EDUCATION].isna(), Cols.YEAR_OF_EDUCATION] = (
+    MISSING_PLACEHOLDER
+)
 
 # %%
 # check/derive main target variables
@@ -150,6 +156,43 @@ data_df[Cols.FOLLOWUP_MRS_BINARY_GT1] = (
     .astype("Int64")
     .astype(str)
     .replace("<NA>", MISSING_PLACEHOLDER)
+)
+
+# MoCa is a secondary target variable
+# cutoff is derived according to Gallucci et al 2024 accounting for age and years of education
+MOCA_YOE_CUTOFF = 12
+MOCA_AGE_CUTOFF_LOW = 55
+MOCA_AGE_CUTOFF_HIGH = 70
+
+# re-format data types
+for col in [
+    Cols.FOLLOWUP_MOCA,
+    Cols.YEAR_OF_EDUCATION,
+    Cols.AGE,
+]:
+    data_df[col] = pd.to_numeric(data_df[col], errors="coerce")
+
+conditions = [
+    (data_df[Cols.YEAR_OF_EDUCATION] <= MOCA_YOE_CUTOFF)
+    & (data_df[Cols.AGE] < MOCA_AGE_CUTOFF_LOW),
+    (data_df[Cols.YEAR_OF_EDUCATION] <= MOCA_YOE_CUTOFF)
+    & (data_df[Cols.AGE].between(MOCA_AGE_CUTOFF_LOW, MOCA_AGE_CUTOFF_HIGH)),
+    (data_df[Cols.YEAR_OF_EDUCATION] <= MOCA_YOE_CUTOFF)
+    & (data_df[Cols.AGE] > MOCA_AGE_CUTOFF_HIGH),
+    (data_df[Cols.YEAR_OF_EDUCATION] > MOCA_YOE_CUTOFF)
+    & (data_df[Cols.AGE] < MOCA_AGE_CUTOFF_LOW),
+    (data_df[Cols.YEAR_OF_EDUCATION] > MOCA_YOE_CUTOFF)
+    & (data_df[Cols.AGE].between(MOCA_AGE_CUTOFF_LOW, MOCA_AGE_CUTOFF_HIGH)),
+    (data_df[Cols.YEAR_OF_EDUCATION] > MOCA_YOE_CUTOFF)
+    & (data_df[Cols.AGE] > MOCA_AGE_CUTOFF_HIGH),
+]
+
+cutoffs = [26, 26, 22, 28, 26, 25]
+
+cutoff = np.select(conditions, cutoffs, default=np.nan)
+
+data_df[Cols.FOLLOWUP_MOCA_BINARY] = (data_df[Cols.FOLLOWUP_MOCA] < cutoff).astype(
+    "Int64"
 )
 
 # %%

@@ -8,7 +8,6 @@ Requirements:
 Outputs:
     - Cleaned and extended data CSV at PROSPECTIVE_SAMPLE_CLEAN_CSV (not inside the repo)
 
-TODO: Add stroke outcome measures when available.
 """
 
 # %%
