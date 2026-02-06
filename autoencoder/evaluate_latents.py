@@ -25,6 +25,7 @@ from sklearn.metrics import roc_auc_score
 
 from svd_marker_tools.config import (
     DATA_FOLDER,
+    MISSING_PLACEHOLDER,
     PROSPECTIVE_SAMPLE_CLEAN_CSV,
     RETROSPECTIVE_SAMPLE_CLEAN_CSV,
 )
@@ -180,7 +181,95 @@ for score_col in svd_scores:
 
 # %%
 # evaluate latents in prospective data
-# further variables
+# further variable: MOCA
+prospective_data_df_moca = prospective_data_df.copy()
+prospective_data_df_moca = prospective_data_df_moca[
+    prospective_data_df_moca[Cols.FOLLOWUP_MOCA].notna()
+]
+
+y_bin = prospective_data_df_moca[Cols.FOLLOWUP_MOCA_BINARY].astype(int).to_numpy()
+y_cont = prospective_data_df_moca[Cols.FOLLOWUP_MOCA].to_numpy(dtype=float)
+
+lines.append("\n\nSVD autoencoder evaluation\n")
+lines.append("External validation/prospective data\n")
+lines.append(f"N = {len(prospective_data_df_moca)}\n")
+
+# --- 1) Logistic regression + AUC ---
+lines.append("\nLogistic regression: MoCA binary ~ SVD score (univariate)\n")
+for score_col in svd_scores:
+    x = prospective_data_df_moca[[score_col]].to_numpy(dtype=float)
+
+    clf = LogisticRegression(solver="lbfgs", max_iter=10_000)
+    clf.fit(x, y_bin)
+
+    p = clf.predict_proba(x)[:, 1]
+    auc = roc_auc_score(y_bin, p)
+
+    beta = float(clf.coef_[0][0])
+    intercept = float(clf.intercept_[0])
+
+    lines.append(f"\nScore: {score_col}\n")
+    lines.append(f"  coef (beta): {beta:.6f}\n")
+    lines.append(f"  intercept:   {intercept:.6f}\n")
+    lines.append(f"  AUC:         {auc:.4f}\n")
+
+# --- 2) Kendall's tau SVD scores vs continuous NIHSS ---
+lines.append("\nKendall's tau: MoCA continuous vs SVD score\n")
+for score_col in svd_scores:
+    x = prospective_data_df_moca[score_col].to_numpy(dtype=float)
+    tau, p = kendalltau(x, y_cont, nan_policy="omit")
+
+    lines.append(f"\nScore: {score_col}\n")
+    lines.append(f"  tau: {tau:.4f}\n")
+    lines.append(f"  p:   {p:.4g}\n")
+
+# %%
+# evaluate latents in prospective data
+# further variable: mRS@3mon-followup
+prospective_data_df_mrs = prospective_data_df.copy()
+prospective_data_df_mrs = prospective_data_df_mrs[
+    prospective_data_df_mrs[Cols.FOLLOWUP_MRS] != MISSING_PLACEHOLDER
+]
+# drop patients with restroke during followup and & prestroke mrS >1
+prospective_data_df_mrs = prospective_data_df_mrs[
+    prospective_data_df_mrs[Cols.FOLLOWUP_RESTROKE] != "1"
+]
+
+y_bin = prospective_data_df_mrs[Cols.FOLLOWUP_MRS_BINARY_GT1].astype(int).to_numpy()
+y_cont = prospective_data_df_mrs[Cols.FOLLOWUP_MRS].to_numpy(dtype=float)
+
+lines.append("\n\nSVD autoencoder evaluation\n")
+lines.append("External validation/prospective data\n")
+lines.append(f"N = {len(prospective_data_df_mrs)}\n")
+
+# --- 1) Logistic regression + AUC ---
+lines.append("\nLogistic regression: mRS binary ~ SVD score (univariate)\n")
+for score_col in svd_scores:
+    x = prospective_data_df_mrs[[score_col]].to_numpy(dtype=float)
+
+    clf = LogisticRegression(solver="lbfgs", max_iter=10_000)
+    clf.fit(x, y_bin)
+
+    p = clf.predict_proba(x)[:, 1]
+    auc = roc_auc_score(y_bin, p)
+
+    beta = float(clf.coef_[0][0])
+    intercept = float(clf.intercept_[0])
+
+    lines.append(f"\nScore: {score_col}\n")
+    lines.append(f"  coef (beta): {beta:.6f}\n")
+    lines.append(f"  intercept:   {intercept:.6f}\n")
+    lines.append(f"  AUC:         {auc:.4f}\n")
+
+# --- 2) Kendall's tau SVD scores vs continuous NIHSS ---
+lines.append("\nKendall's tau: mRS continuous vs SVD score\n")
+for score_col in svd_scores:
+    x = prospective_data_df_mrs[score_col].to_numpy(dtype=float)
+    tau, p = kendalltau(x, y_cont, nan_policy="omit")
+
+    lines.append(f"\nScore: {score_col}\n")
+    lines.append(f"  tau: {tau:.4f}\n")
+    lines.append(f"  p:   {p:.4g}\n")
 
 
 # %% write results txt
